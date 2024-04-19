@@ -34,10 +34,36 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newKey}`); // Respond with 'Ok' (we will replace this)
 });
 
+app.post("/urls/:id", (req, res) => {
+  const id = req.params.id;
+  const updatedURL = req.body.url;
+  urlDatabase[id] = updatedURL
+  res.redirect("/urls");
+});
+
+// app.post("/urls/:id/edit", (req, res) => {
+//   //delete urlDatabase[req.params.id]
+//   const id = req.params.id;
+//   const updatedURL = req.body.url;
+//   res.redirect("/urls/:id");
+// });
+
+app.post("/urls/:id/edit", (req, res) => {
+  const id = req.params.id; // Grab the ID from params
+  const updatedURL = req.body.url; // Assuming 'url' is the name attribute of the input in your form for the new URL
+  
+  // Update the URL in the database
+  urlDatabase[id] = updatedURL; // This adjusts the actual URL. Make sure this aligns with how your database is structured.
+
+  // Redirect to the updated URL's page or to the index
+  res.redirect(`/urls/${id}`); // Note the use of template literals to dynamically insert the ID
+});
+
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id]
   res.redirect("/urls");
 });
+
 
 
 
@@ -67,7 +93,9 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  const id = req.params.id
+  const longURL = urlDatabase[id]
+  const templateVars = { id, longURL };
     res.render("urls_show", templateVars);
   });
 
