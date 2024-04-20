@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 
+const cookieParser = require('cookie-parser');
+   app.use(cookieParser());
+
 function generateRandomString(length) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -40,6 +43,17 @@ app.post("/urls/:id", (req, res) => {
   urlDatabase[id] = updatedURL
   res.redirect("/urls");
 });
+
+
+// .post cookie
+app.post('/login', (req, res) => {
+  const { username } = req.body;
+  res.cookie('username', username);
+  res.redirect('/urls');
+});
+
+
+
 
 // app.post("/urls/:id/edit", (req, res) => {
 //   //delete urlDatabase[req.params.id]
@@ -107,6 +121,15 @@ app.get("/u/:id", (req, res) => {
   } else {
     res.status(404).send("Short URL not found");
   }
+
+  //cookie parser/////////////////////////////////////////
+  app.get('/login', (req, res) => {
+    const username = req.cookies['username'];
+    
+    // Now you can use the username in your response
+    res.send(`Hello, ${username}!`);
+  });
+
 });
 
   
